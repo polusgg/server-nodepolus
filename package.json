@@ -1,6 +1,6 @@
 {
   "name": "@polusgg/server-nodepolus",
-  "version": "3.0.1-7",
+  "version": "3.0.1-8",
   "description": "Contains the files for Polus.gg's NodePolus instance",
   "engines": {
     "node": ">=15"
