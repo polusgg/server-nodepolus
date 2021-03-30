@@ -1,7 +1,7 @@
 {
   "name": "@polusgg/server-nodepolus",
   "version": "3.0.1-10",
-  "description": "NodePolus preconfigured for Polus.gg",
+  "description": "NodePolus server preconfigured for Polus.gg",
   "engines": {
     "node": ">=15"
   },
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NodePolus/nodepolus.git"
+    "url": "git+https://github.com/polusgg/server-nodepolus.git"
   },
-  "author": "",
+  "author": "Polus.gg",
   "license": "AGPL-3.0",
   "bugs": {
-    "url": "https://github.com/NodePolus/nodepolus/issues"
+    "url": "https://github.com/polusgg/server-nodepolus/issues"
   },
-  "homepage": "https://github.com/NodePolus/nodepolus",
+  "homepage": "https://github.com/polusgg/server-nodepolus",
   "dependencies": {
     "@nodepolus/framework": "latest",
     "@polusgg/plugin-loadpolus-client": "latest",
