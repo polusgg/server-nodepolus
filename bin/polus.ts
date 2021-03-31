@@ -17,6 +17,7 @@ import { BasePlugin } from "@nodepolus/framework/src/api/plugin";
 import { Logger } from "@nodepolus/framework/src/logger";
 import { Server } from "@nodepolus/framework/src/server";
 import meta from "../package.json";
+import toposort from "toposort";
 import fs from "fs/promises";
 import path from "path";
 
@@ -85,6 +86,91 @@ function listenForShutdown(): void {
 }
 
 /**
+ * Loads all plugins installed via npm by iterating through the dependencies in
+ * the `package.json` file.
+ */
+async function loadPluginPackages(pluginConfigs: Record<string, Record<string, unknown>>): Promise<void> {
+  const dependencies = Object.keys(meta.dependencies);
+  const lonePlugins: string[] = [];
+  const graph: [string, string][] = [];
+
+  for (let i = 0; i < dependencies.length; i++) {
+    try {
+      const packageMeta = await import(`${dependencies[i]}/package.json`);
+
+      if (packageMeta["np-plugin"] ?? false) {
+        const childDependencies = Object.keys(packageMeta.dependencies);
+        let hasDependencies = false;
+
+        for (let j = 0; j < childDependencies.length; j++) {
+          try {
+            const childMeta = await import(`${childDependencies[j]}/package.json`);
+
+            if (childMeta["np-plugin"] ?? false) {
+              hasDependencies = true;
+
+              graph.push([childDependencies[j], dependencies[i]]);
+            }
+          } catch (childError) {
+            logger.error(`An error occured while loading the package.json for ${childDependencies[j]}`);
+            logger.catch(childError);
+
+            continue;
+          }
+        }
+
+        if (!hasDependencies) {
+          lonePlugins.push(dependencies[i]);
+        }
+      }
+    } catch (parentError) {
+      logger.error(`An error occured while loading the package.json for ${dependencies[i]}`);
+      logger.catch(parentError);
+
+      continue;
+    }
+  }
+
+  const pluginsToLoad = [...new Set([...lonePlugins, ...toposort(graph)])];
+
+  for (let i = 0; i < pluginsToLoad.length; i++) {
+    try {
+      const pluginMeta = await import(`${pluginsToLoad[i]}/package.json`);
+
+      if (pluginMeta["np-plugin"] ?? false) {
+        logger.verbose(`Loading "${pluginsToLoad[i]}" v${pluginMeta.version}`);
+
+        const exported = await import(pluginsToLoad[i]);
+        let name = pluginsToLoad[i];
+        let version = pluginMeta.version;
+        let pluginConfig: Record<string, unknown> = {};
+
+        if (name in pluginConfigs) {
+          pluginConfig = pluginConfigs[name];
+        }
+
+        if (exported.default !== undefined) {
+          try {
+            // eslint-disable-next-line new-cap
+            const plugin: BasePlugin = new exported.default(pluginConfig);
+
+            name = plugin.getPluginName();
+            version = plugin.getPluginVersionString();
+          } catch (error) {}
+        }
+
+        logger.info(`Loaded plugin: ${name} v${version}`);
+      }
+    } catch (error) {
+      logger.error(`An error occured while loading ${pluginsToLoad[i]}`);
+      logger.catch(error);
+
+      continue;
+    }
+  }
+}
+
+/**
  * Loads all top-level plugin files and folders within the given folder.
  *
  * - Files must end with either `.npplugin.ts` or `.npplugin.js`
@@ -93,7 +179,7 @@ function listenForShutdown(): void {
  *
  * @param pluginsPath - The path to the plugins folder (default `__dirname/plugins`)
  */
-async function loadPluginsFolder(pluginsPath: string = path.join(__dirname, "plugins")): Promise<void> {
+async function loadPluginsFolder(pluginConfigs: Record<string, Record<string, unknown>>, pluginsPath: string = path.join(__dirname, "plugins")): Promise<void> {
   try {
     await fs.access(pluginsPath);
   } catch (error) {
@@ -141,57 +227,24 @@ async function loadPluginsFolder(pluginsPath: string = path.join(__dirname, "plu
       continue;
     }
 
+    let pluginConfig: Record<string, unknown> = {};
+
+    if (fileName in pluginConfigs) {
+      pluginConfig = pluginConfigs[fileName];
+    }
+
     // eslint-disable-next-line new-cap
-    const plugin: BasePlugin = new exported.default();
+    const plugin: BasePlugin = new exported.default(pluginConfig);
 
     logger.info(`Loaded plugin: ${plugin.getPluginName()} v${plugin.getPluginVersionString()}`);
   }
 }
 
-/**
- * Loads all plugins installed via npm by iterating through the dependencies in
- * the `package.json` file.
- */
-async function loadPluginPackages(): Promise<void> {
-  const dependencies = Object.keys(meta.dependencies);
-
-  for (let i = 0; i < dependencies.length; i++) {
-    try {
-      const pluginMeta = await import(`${dependencies[i]}/package.json`);
-
-      if (pluginMeta["np-plugin"] ?? false) {
-        logger.verbose(`Loading "${dependencies[i]}" v${pluginMeta.version}`);
-
-        const exported = await import(dependencies[i]);
-        let name = dependencies[i];
-        let version = pluginMeta.version;
-
-        if (exported.default !== undefined) {
-          try {
-            // eslint-disable-next-line new-cap
-            const plugin: BasePlugin = new exported.default();
-
-            name = plugin.getPluginName();
-            version = plugin.getPluginVersionString();
-          } catch (error) {}
-        }
-
-        logger.info(`Loaded plugin: ${name} v${version}`);
-      }
-    } catch (error) {
-      logger.error(`An error occured while loading ${dependencies[i]}`);
-      logger.catch(error);
-
-      continue;
-    }
-  }
-}
-
-async function loadPlugins(): Promise<void> {
+async function loadPlugins(pluginConfigs: Record<string, Record<string, unknown>>): Promise<void> {
   logger.info("Loading plugins");
 
-  await loadPluginsFolder();
-  await loadPluginPackages();
+  await loadPluginPackages(pluginConfigs);
+  await loadPluginsFolder(pluginConfigs);
 }
 
 /**
@@ -219,10 +272,11 @@ async function start(enableAnnouncementServer: boolean = server.getConfig().enab
 
   try {
     const serverConfig: ServerConfig = await loadConfig();
+    const pluginConfigs: Record<string, Record<string, unknown>> = serverConfig.plugins ?? {};
 
     createServers(serverConfig);
     listenForShutdown();
-    await loadPlugins();
+    await loadPlugins(pluginConfigs);
     await start();
   } catch (error) {
     logger.catch(error);

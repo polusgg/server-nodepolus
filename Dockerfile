@@ -13,6 +13,12 @@ ENV NODE_ENV=development \
     NP_LOG_LEVEL=info \
     NP_DISABLE_COLORS=true
 
+ENV NP_REDIS_HOST \
+    NP_REDIS_PORT \
+    NP_REDIS_PASSWORD \
+    NP_DROPLET_ADDRESS
+    NP_DROPLET_PORT \
+
 COPY --chown=node:node .npmrc_docker \
                        ./.npmrc
 COPY --chown=node:node package.json \
