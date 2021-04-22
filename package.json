@@ -23,9 +23,10 @@
   "homepage": "https://github.com/polusgg/server-nodepolus",
   "dependencies": {
     "@nodepolus/framework": "latest",
-    "@polusgg/plugin-gamemode-zombies": "latest",
+    "@polusgg/plugin-gamemode-town-of-polus": "latest",
     "@polusgg/plugin-loadpolus-client": "latest",
     "@polusgg/plugin-polusgg-api": "latest",
+    "@polusgg/plugin-polusgg-auth": "latest",
     "commonjs": "^0.0.1",
     "toposort": "^2.0.2",
     "ts-node": "^9.1.0"

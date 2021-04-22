@@ -1,7 +1,5 @@
 FROM node:15.12.0-alpine3.13
 
-USER node
-
 WORKDIR /usr/src/server-nodepolus
 
 ARG NPM_AUTH_TOKEN
@@ -28,5 +26,7 @@ COPY --chown=node:node bin \
                        ./bin
 
 RUN ["npm", "ci"]
+
+USER node
 
 ENTRYPOINT ["npm", "start"]
