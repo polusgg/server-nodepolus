@@ -23,11 +23,14 @@
   "homepage": "https://github.com/polusgg/server-nodepolus",
   "dependencies": {
     "@nodepolus/framework": "latest",
+    "@polusgg/plugin-polusgg-api": "latest",
     "@polusgg/plugin-gamemode-town-of-polus": "latest",
     "@polusgg/plugin-loadpolus-client": "latest",
-    "@polusgg/plugin-polusgg-api": "latest",
+    "@polusgg/module-polusgg-auth-api": "latest",
     "@polusgg/plugin-polusgg-auth": "latest",
     "commonjs": "^0.0.1",
+    "emittery": "^0.8.1",
+    "got": "^11.8.2",
     "toposort": "^2.0.2",
     "ts-node": "^9.1.0"
   },
