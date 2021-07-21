@@ -3,18 +3,18 @@
   "serverPort": 22023,
   "enableAnnouncementServer": false,
   "maxLobbies": 100000,
-  "maxConnectionsPerAddress": 10,
+  "maxConnectionsPerAddress": 15,
   "lobby": {
     "defaultAddress": "0.0.0.0",
     "defaultPort": 22023,
     "defaultStartTimerDuration": 5,
     "defaultTimeToJoinUntilClosed": 5,
     "defaultTimeToStartUntilClosed": 600,
-    "maxPlayers": 10,
+    "maxPlayers": 15,
     "hideGhostChat": true
   },
   "logging": {
-    "level": "info",
+    "level": "debug",
     "maxFileSizeInBytes": 104857600,
     "maxFiles": 10,
     "filename": ""
