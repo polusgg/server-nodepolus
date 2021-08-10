@@ -27,11 +27,14 @@
     "@polusgg/plugin-gamemode-town-of-polus": "latest",
     "@polusgg/plugin-polusgg-auth": "latest",
     "@polusgg/module-polusgg-auth-api": "latest",
+    "@polusgg/plugin-logger": "latest",
     "commonjs": "^0.0.1",
     "emittery": "^0.8.1",
     "got": "^11.8.2",
+    "mongodb": "^4.1.0",
     "toposort": "^2.0.2",
-    "ts-node": "^9.1.0"
+    "ts-node": "^9.1.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "^14.14.10",
