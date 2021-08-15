@@ -30,6 +30,7 @@
     "@polusgg/module-polusgg-auth-api": "latest",
     "@polusgg/plugin-logger": "latest",
     "@polusgg/module-cosmetics": "latest",
+    "@polusgg/plugin-loadpolus-client": "latest",
     "commonjs": "^0.0.1",
     "emittery": "^0.8.1",
     "got": "^11.8.2",
