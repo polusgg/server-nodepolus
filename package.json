@@ -1,6 +1,6 @@
 {
   "name": "@polusgg/server-nodepolus",
-  "version": "3.0.1-50",
+  "version": "3.0.1-51",
   "description": "NodePolus server preconfigured for Polus.gg",
   "engines": {
     "node": ">=15"
@@ -37,6 +37,7 @@
     "mongodb": "^4.1.0",
     "toposort": "^2.0.2",
     "ts-node": "^9.1.0",
+    "ioredis": "^4.27.7",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
