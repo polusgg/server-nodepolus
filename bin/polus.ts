@@ -113,7 +113,7 @@ async function loadPluginPackages(pluginConfigs: Record<string, Record<string, u
             }
           } catch (childError) {
             logger.error(`An error occured while loading the package.json for ${childDependencies[j]}`);
-            logger.catch(childError);
+            logger.catch(childError as Error);
 
             continue;
           }
@@ -125,7 +125,7 @@ async function loadPluginPackages(pluginConfigs: Record<string, Record<string, u
       }
     } catch (parentError) {
       logger.error(`An error occured while loading the package.json for ${dependencies[i]}`);
-      logger.catch(parentError);
+      logger.catch(parentError as Error);
 
       continue;
     }
@@ -163,7 +163,7 @@ async function loadPluginPackages(pluginConfigs: Record<string, Record<string, u
       }
     } catch (error) {
       logger.error(`An error occured while loading ${pluginsToLoad[i]}`);
-      logger.catch(error);
+      logger.catch(error as Error);
 
       continue;
     }
@@ -279,7 +279,7 @@ async function start(enableAnnouncementServer: boolean = server.getConfig().enab
     await loadPlugins(pluginConfigs);
     await start();
   } catch (error) {
-    logger.catch(error);
+    logger.catch(error as Error);
 
     process.exit(1);
   }
