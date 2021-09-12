@@ -33,6 +33,7 @@
     "@polusgg/module-cosmetics": "latest",
     "@polusgg/plugin-loadpolus-client": "latest",
     "@polusgg/plugin-lfg": "latest",
+    "async-mutex": "^0.3.2",
     "commonjs": "^0.0.1",
     "emittery": "^0.8.1",
     "got": "^11.8.2",
