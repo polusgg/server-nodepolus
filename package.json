@@ -1,6 +1,6 @@
 {
   "name": "@polusgg/server-nodepolus",
-  "version": "3.0.1-97",
+  "version": "3.0.1-98",
   "description": "NodePolus server preconfigured for Polus.gg",
   "engines": {
     "node": ">=15"
