@@ -24,6 +24,7 @@ import path from "path";
 const logger = new Logger("NodePolus", [process.env.NP_LOG_LEVEL].find(Logger.isValidLevel) ?? DEFAULT_CONFIG.logging.level);
 
 process.on("uncaughtException", err => {
+  console.log(err.stack);
   logger.catch(err);
 });
 
