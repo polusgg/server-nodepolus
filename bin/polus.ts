@@ -20,8 +20,18 @@ import meta from "../package.json";
 import toposort from "toposort";
 import fs from "fs/promises";
 import path from "path";
+import Sentry from "@sentry/node";
 
 const logger = new Logger("NodePolus", [process.env.NP_LOG_LEVEL].find(Logger.isValidLevel) ?? DEFAULT_CONFIG.logging.level);
+
+Sentry.init({
+  dsn: "https://e6f294cc0cd64e24a297e86576f37b68@o1016669.ingest.sentry.io/5985155",
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 1.0,
+});
 
 process.on("uncaughtException", err => {
   console.log(err.stack);
