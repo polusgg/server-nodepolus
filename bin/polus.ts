@@ -20,7 +20,7 @@ import meta from "../package.json";
 import toposort from "toposort";
 import fs from "fs/promises";
 import path from "path";
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 
 const logger = new Logger("NodePolus", [process.env.NP_LOG_LEVEL].find(Logger.isValidLevel) ?? DEFAULT_CONFIG.logging.level);
 
